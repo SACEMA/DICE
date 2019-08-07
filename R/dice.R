@@ -373,11 +373,6 @@ runDICE <- function(data_source = NULL, year = 2016, mod_level = 2, fit_level = 
 
   }
 
-  if (disease == "flu" & data_source == 'quidel' & method == 'mech') {
-
-    mydata <- get.quidel.da(mydata = mydata, all_years_epi = all_years_epi)
-
-  }
 
   ## DA for San Diego
   if ( length(mod_name) == 5 && mod_name[5] == "SD") {
@@ -702,7 +697,7 @@ fitOnePatch <- function(mydata = NULL, all_years_epi = NULL, opt.list = NULL, ru
 	nblock = 3
 	accept.vec = array(0, c(n, nblock))
 
-    if (mydata$data_source == "cdc" || mydata$data_source == "quidel" || (mydata$model$attr$level==6 && mydata$model$attr$ABBV_4=="CA" && mydata$model$attr$ABBV_6 == "SD")) {
+    if (mydata$data_source == "cdc" || (mydata$model$attr$level==6 && mydata$model$attr$ABBV_4=="CA" && mydata$model$attr$ABBV_6 == "SD")) {
 
     	model_pmax["pC"] = 0.2
     	model_pmax["R0"] = 2.0
@@ -784,7 +779,7 @@ fitOnePatch <- function(mydata = NULL, all_years_epi = NULL, opt.list = NULL, ru
 
     ## Write CSV files: (1) with the ILI profiles and (2) a CSV file with onset week, week maximum, maximum value etc.
 
-	if (mydata$data_source == 'cdc' || mydata$data_source == "quidel") {
+	if (mydata$data_source == 'cdc') {
 	    success = writecsvOnePatch(mydata = mydata, run.list = run.list, tab = tab.model, model_rtn = model_rtn, model_profile = model_profile,
         ireal = ireal)
     }
@@ -796,7 +791,7 @@ fitOnePatch <- function(mydata = NULL, all_years_epi = NULL, opt.list = NULL, ru
 	 tables = calc.mech.err(tables = tables.mod, profiles = model_profile_ili, nfit = nperiodsFit, state_id = mod_id)
 	 tables.mod = tables
 
-    if (mydata$data_source == "cdc" || mydata$data_source == "quidel") {
+    if (mydata$data_source == "cdc") {
     	if (as.character(run.list$plot) == "TRUE" || as.character(run.list$plot) == "1") {
     		for (k in 1:length(run.list$device)) success = plotFitOnePatch(model_rtn = model_rtn, model_profile = model_profile, mydata = mydata,
     			ireal = ireal, run.list = run.list, idevice = k)
@@ -1048,7 +1043,7 @@ fitMulti <- function(mydata = NULL,  all_years_epi = NULL, opt.list = NULL, run.
 
     ## Just for the CDC prediction limit R0 nd pC
 
-    if (mydata$data_source == "cdc" || mydata$data_source == "quidel") {
+    if (mydata$data_source == "cdc") {
 
     	model_pmax["pC"] = 0.2
     	model_pmax["R0"] = 2.0
@@ -1079,7 +1074,7 @@ fitMulti <- function(mydata = NULL,  all_years_epi = NULL, opt.list = NULL, run.
 
    ## Just for the CDC prediction limit pC and R0
 
-   if (mydata$data_source == "cdc" || mydata$data_source == "quidel") {
+   if (mydata$data_source == "cdc") {
    	fit_pmax["R0", 1:n] = 2.0
    	fit_pmax["pC", 1:n] = 0.2
 
@@ -1340,7 +1335,7 @@ fitMulti <- function(mydata = NULL,  all_years_epi = NULL, opt.list = NULL, run.
 	##
     ## Plot all of the results - both profiles and histograms - the device list can have more than one element
 
-    if (mydata$data_source == "cdc" || mydata$data_source == "quidel") {
+    if (mydata$data_source == "cdc") {
     	if (as.character(run.list$plot) == "TRUE" || as.character(run.list$plot) == "1") {
     		for (k in 1:length(run.list$device)) success = plotFitCDCPercentILI(rtn = rtn, profile = profile, model_rtn = model_rtn, model_profile = model_profile, mydata = mydata,
     			ireal = ireal, run.list = run.list, idevice = k)
@@ -1589,7 +1584,7 @@ fitSingle <- function(mydata = NULL, all_years_epi = NULL, opt.list = NULL, run.
 
     ## Just for the CDC prediction limit R0 nd pC
 
-    if (mydata$data_source == "cdc" || mydata$data_source == "quidel") {
+    if (mydata$data_source == "cdc") {
 
     	model_pmax["pC"] = 0.2
     	model_pmax["R0"] = 2.0
@@ -1621,7 +1616,7 @@ fitSingle <- function(mydata = NULL, all_years_epi = NULL, opt.list = NULL, run.
 
     ## Just for the CDC prediction limit pC and R0
 
-   if (mydata$data_source == "cdc" || mydata$data_source == "quidel") {
+   if (mydata$data_source == "cdc") {
    	fit_pmax["R0", 1:n] = 1.4
    	fit_pmax["pC", 1:n] = 0.2
 
@@ -1829,7 +1824,7 @@ fitSingle <- function(mydata = NULL, all_years_epi = NULL, opt.list = NULL, run.
 
     success = saveRData(mydata = mydata, all_years_epi = all_years_epi, run.input = run.input, ireal = ireal)
 
-   if (mydata$data_source == "cdc" || mydata$data_source == "quidel") {
+   if (mydata$data_source == "cdc") {
    	success = writeCSV(mydata = mydata, run.list = run.list, model_rtn = model_rtn, model_profile = model_profile,
    		rtn = rtn, profile = profile, ireal = ireal)
    }
@@ -1856,7 +1851,7 @@ fitSingle <- function(mydata = NULL, all_years_epi = NULL, opt.list = NULL, run.
 	##
     ## Plot all of the results - both profiles and histograms - the device list can have more than one element
 
-    if (mydata$data_source == "cdc" || mydata$data_source == "quidel") {
+    if (mydata$data_source == "cdc") {
     	if (as.character(toupper(run.list$plot)) == "TRUE" || as.character(run.list$plot) == "1") {
     		for (k in 1:length(run.list$device)) success = plotFitCDCPercentILI(rtn = rtn, profile = profile, model_rtn = model_rtn, model_profile = model_profile,
     			mydata = mydata, ireal = ireal, run.list = run.list, idevice = k)
